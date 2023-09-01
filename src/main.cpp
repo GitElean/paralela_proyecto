@@ -2,6 +2,14 @@
 #include <SDL2/SDL.h>
 using namespace std;
 
+
+typedef struct {
+    int r;
+    int g;
+    int b;
+} Color;
+
+
 int main() {
   cout << "Hello World!";
       SDL_Init(SDL_INIT_VIDEO);
@@ -14,7 +22,12 @@ int main() {
 
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
 
-    SDL_SetRenderDrawColor(renderer, 200, 200, 0, 255); // Color de fondo
+    Color color;
+    color.r = 200;
+    color.g = 200;
+    color.b = 0;
+
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255); // Color de fondo
 
     SDL_RenderClear(renderer); // Llena la ventana con el color de fondo
 
