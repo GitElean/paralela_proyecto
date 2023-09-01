@@ -1,3 +1,3 @@
 #! /bin/sh
 
-./configure.sh ; ./build.sh && ./build/PONG
+./configure.sh ; ./build.sh && ./build/ScreenSaver
