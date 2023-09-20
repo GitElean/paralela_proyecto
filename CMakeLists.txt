@@ -8,11 +8,20 @@ find_package(SDL2 REQUIRED)
 # Encontrar OpenMP
 find_package(OpenMP REQUIRED)
 
-include_directories(${SDL2_INCLUDE_DIRS})
+# Agregar el directorio de los headers (en este caso, es el mismo que el de los sources)
+include_directories(${PROJECT_SOURCE_DIR}/src ${SDL2_INCLUDE_DIRS})
 
-# Agregar todos tus archivos fuente aquí
-add_executable(${PROJECT_NAME} src/main.cpp)
+# Especificar los archivos fuente
+set(SOURCES
+    src/main.cpp
+    src/secuencial.cpp
+    # Aquí puedes añadir futuros archivos fuente, como src/paralelo.cpp
+)
 
+# Crear el ejecutable
+add_executable(${PROJECT_NAME} ${SOURCES})
+
+# Enlazar las bibliotecas necesarias
 target_link_libraries(${PROJECT_NAME}
   ${SDL2_LIBRARIES}
   OpenMP::OpenMP_CXX
