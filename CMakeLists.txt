@@ -15,6 +15,7 @@ include_directories(${PROJECT_SOURCE_DIR}/src ${SDL2_INCLUDE_DIRS})
 set(SOURCES
     src/main.cpp
     src/secuencial.cpp
+    src/paralelo.cpp
     # Aquí puedes añadir futuros archivos fuente, como src/paralelo.cpp
 )
 
