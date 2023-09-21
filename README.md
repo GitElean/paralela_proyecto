@@ -15,6 +15,10 @@ El proyecto plantea ser un screen saver generado de forma paralela
 ### How to run
 Para ejecutar el programa solo es necesario ejecutar el script run.sh de la siguiente manera ./run.sh
 
+Esto nos brindará un menú para correr el programa de forma secuencial (1), de forma paralela (2) y salir (3). 
+Al elegir correr de forma secuencial y paralela podremos definir el número de círculos.
+Al elegir exclusivamente de forma parelal podremos definir el número de threads a utilizar.
+
 ### Funcionalidad de los scripts
 configure: configuración de Cmake
 build: buildea el programa
