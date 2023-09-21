@@ -33,7 +33,7 @@ ParallelScreenSaver::~ParallelScreenSaver() {
 }
 
 void ParallelScreenSaver::initializeCircles() {
-    std::mt19937 gen(static_cast<unsigned long>(time(nullptr))); // <-- Cambio para usar mt19937 como generador
+    std::mt19937 gen(static_cast<unsigned long>(time(nullptr)));
     std::uniform_int_distribution<int> dist_pos_x(0, window_width);
     std::uniform_int_distribution<int> dist_pos_y(0, window_height);
     std::uniform_int_distribution<int> dist_radius(0, 50);
@@ -64,21 +64,25 @@ Uint32 ParallelScreenSaver::calculateFPS(Uint32 start_time) {
 }
 
 void ParallelScreenSaver::moveCircles() {
-    
-
     #pragma omp parallel for num_threads(num_threads) default(none) shared(circles, n)
     for (int i = 0; i < n; i++) {
-        circles[i].x += circles[i].velocity_x;
-        circles[i].y += circles[i].velocity_y;
+        Circle &currentCircle = circles[i];  // Referencia al círculo actual
 
-        // Check collision with window borders
-        if (circles[i].x - circles[i].radius < 0 || circles[i].x + circles[i].radius > window_width) {
-            circles[i].velocity_x = -circles[i].velocity_x;
+        // Prever colisiones en el eje X
+        if (currentCircle.x + currentCircle.velocity_x - currentCircle.radius < 0 ||
+            currentCircle.x + currentCircle.velocity_x + currentCircle.radius > window_width) {
+            currentCircle.velocity_x = -currentCircle.velocity_x;
         }
 
-        if (circles[i].y - circles[i].radius < 0 || circles[i].y + circles[i].radius > window_height) {
-            circles[i].velocity_y = -circles[i].velocity_y;
+        // Prever colisiones en el eje Y
+        if (currentCircle.y + currentCircle.velocity_y - currentCircle.radius < 0 ||
+            currentCircle.y + currentCircle.velocity_y + currentCircle.radius > window_height) {
+            currentCircle.velocity_y = -currentCircle.velocity_y;
         }
+
+        // Mover el círculo
+        currentCircle.x += currentCircle.velocity_x;
+        currentCircle.y += currentCircle.velocity_y;
     }
 }
 

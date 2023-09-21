@@ -6,16 +6,16 @@ int main(int argc, char *argv[]) {
     //saver.run();
 
 
-    int num_threads = 2;  // Puedes establecer un valor predeterminado
+    int num_threads = 8;  // Puedes establecer un valor predeterminado
 
     // Si se proporciona un argumento, usarlo como número de hilos
     if (argc > 1) {
         num_threads = std::stoi(argv[1]);
     }
 
-    ParallelScreenSaver saver(640, 480, 50);
-    saver.setNumThreads(num_threads);
-    saver.run();
+    ParallelScreenSaver saverP(640, 480, 50);
+    saverP.setNumThreads(num_threads);
+    saverP.run();
 
     return 0;
 }
