@@ -4,6 +4,9 @@
 #include <time.h>
 #include <omp.h>
 #include <iostream>
+#include <random> 
+#include <SDL2/SDL.h>
+#include "SDL2_gfxPrimitives.h"
 
 ParallelScreenSaver::ParallelScreenSaver(int width, int height, int num_circles) 
     : window_width(width), window_height(height), n(num_circles), num_threads(4) { // Default 4 threads
@@ -30,16 +33,22 @@ ParallelScreenSaver::~ParallelScreenSaver() {
 }
 
 void ParallelScreenSaver::initializeCircles() {
-    srand(time(NULL));
+    std::mt19937 gen(static_cast<unsigned long>(time(nullptr))); // <-- Cambio para usar mt19937 como generador
+    std::uniform_int_distribution<int> dist_pos_x(0, window_width);
+    std::uniform_int_distribution<int> dist_pos_y(0, window_height);
+    std::uniform_int_distribution<int> dist_radius(0, 50);
+    std::uniform_int_distribution<int> dist_velocity(-2, 2);
+    std::uniform_int_distribution<int> dist_color(0, 255);
+
     for (int i = 0; i < n; i++) {
-        circles[i].x = rand() % window_width;
-        circles[i].y = rand() % window_height;
-        circles[i].radius = rand() % 50;
-        circles[i].velocity_x = rand() % 5 - 2;
-        circles[i].velocity_y = rand() % 5 - 2;
-        circles[i].color.r = rand() % 256;
-        circles[i].color.g = rand() % 256;
-        circles[i].color.b = rand() % 256;
+        circles[i].x = dist_pos_x(gen);
+        circles[i].y = dist_pos_y(gen);
+        circles[i].radius = dist_radius(gen);
+        circles[i].velocity_x = dist_velocity(gen);
+        circles[i].velocity_y = dist_velocity(gen);
+        circles[i].color.r = dist_color(gen);
+        circles[i].color.g = dist_color(gen);
+        circles[i].color.b = dist_color(gen);
     }
 }
 
@@ -55,7 +64,9 @@ Uint32 ParallelScreenSaver::calculateFPS(Uint32 start_time) {
 }
 
 void ParallelScreenSaver::moveCircles() {
-    #pragma omp parallel for
+    
+
+    #pragma omp parallel for num_threads(num_threads) default(none) shared(circles, n)
     for (int i = 0; i < n; i++) {
         circles[i].x += circles[i].velocity_x;
         circles[i].y += circles[i].velocity_y;
@@ -75,19 +86,9 @@ void ParallelScreenSaver::drawCircles() {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);  // Set white background color
     SDL_RenderClear(renderer);
 
-    #pragma omp parallel for
     for (int i = 0; i < n; i++) {
-        SDL_SetRenderDrawColor(renderer, circles[i].color.r, circles[i].color.g, circles[i].color.b, 255);
-        
-        for (int w = 0; w < circles[i].radius * 2; w++) {
-            for (int h = 0; h < circles[i].radius * 2; h++) {
-                int dx = circles[i].radius - w;
-                int dy = circles[i].radius - h;
-                if ((dx*dx + dy*dy) <= (circles[i].radius * circles[i].radius)) {
-                    SDL_RenderDrawPoint(renderer, circles[i].x + dx - circles[i].radius, circles[i].y + dy - circles[i].radius);
-                }
-            }
-        }
+        filledCircleRGBA(renderer, circles[i].x, circles[i].y, circles[i].radius, 
+                         circles[i].color.r, circles[i].color.g, circles[i].color.b, 255); // <-- Usando SDL2_gfx para dibujar círculos
     }
 
     SDL_RenderPresent(renderer);

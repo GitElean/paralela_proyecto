@@ -6,7 +6,7 @@ int main(int argc, char *argv[]) {
     //saver.run();
 
 
-    int num_threads = 4;  // Puedes establecer un valor predeterminado
+    int num_threads = 2;  // Puedes establecer un valor predeterminado
 
     // Si se proporciona un argumento, usarlo como número de hilos
     if (argc > 1) {
